@@ -1,0 +1,31 @@
+{
+  "name": "ai-investment-research-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.11.0",
+    "@langchain/core": "^0.2.14",
+    "@langchain/google-genai": "^0.0.19",
+    "framer-motion": "^11.2.10",
+    "lucide-react": "^0.395.0",
+    "next": "14.2.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "recharts": "^2.12.7",
+    "yahoo-finance2": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.4",
+    "typescript": "^5"
+  }
+}
