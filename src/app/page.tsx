@@ -5,60 +5,61 @@ import { Search } from "lucide-react";
 import styles from "./page.module.css";
 import ResearchResults from "@/components/ResearchResults";
 
-const LOADING_STEPS = [
-  { icon: "🔍", text: "Resolving company ticker symbol..." },
-  { icon: "📡", text: "Fetching real-time market data..." },
-  { icon: "📊", text: "Pulling 90-day price history..." },
-  { icon: "🤖", text: "Running AI investment analysis..." },
-  { icon: "⚖️",  text: "Weighing risks and growth factors..." },
-  { icon: "📝", text: "Compiling your research report..." },
+const LOADING_PHASES = [
+  "Fetching market data",
+  "Analyzing financials",
+  "Running AI model",
+  "Generating report",
 ];
 
 function LoadingAnimation({ company }: { company: string }) {
-  const [stepIndex, setStepIndex] = useState(0);
-  const [dots, setDots] = useState("");
+  const [phase, setPhase] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const stepTimer = setInterval(() => {
-      setStepIndex((prev) => (prev + 1) % LOADING_STEPS.length);
-    }, 2200);
-    return () => clearInterval(stepTimer);
+    // Smooth progress bar
+    const progressTimer = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 92) return p; // hold near end until real data arrives
+        return p + 0.6;
+      });
+    }, 80);
+    return () => clearInterval(progressTimer);
   }, []);
 
   useEffect(() => {
-    const dotTimer = setInterval(() => {
-      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
-    }, 400);
-    return () => clearInterval(dotTimer);
+    // Cycle phases
+    const phaseTimer = setInterval(() => {
+      setPhase((p) => Math.min(p + 1, LOADING_PHASES.length - 1));
+    }, 2800);
+    return () => clearInterval(phaseTimer);
   }, []);
 
   return (
     <div className={styles.loadingContainer}>
-      {/* Animated orb */}
-      <div className={styles.orbWrapper}>
-        <div className={styles.orb}></div>
-        <div className={styles.orbRing}></div>
-        <div className={styles.orbRing2}></div>
+      {/* Thin progress bar at top */}
+      <div className={styles.progressBar}>
+        <div className={styles.progressBarFill} style={{ width: `${progress}%` }} />
       </div>
 
-      <p className={styles.loadingCompany}>Analyzing <strong>{company}</strong></p>
+      <div className={styles.loadingInner}>
+        {/* Minimal spinner ring */}
+        <div className={styles.loadingRing} />
 
-      {/* Step indicator */}
-      <div className={styles.stepCard}>
-        <span className={styles.stepIcon}>{LOADING_STEPS[stepIndex].icon}</span>
-        <span className={styles.stepText}>
-          {LOADING_STEPS[stepIndex].text}{dots}
-        </span>
-      </div>
+        <div className={styles.loadingInfo}>
+          <p className={styles.loadingCompany}>{company}</p>
+          <p className={styles.loadingPhase}>{LOADING_PHASES[phase]}</p>
 
-      {/* Progress dots */}
-      <div className={styles.progressDots}>
-        {LOADING_STEPS.map((_, i) => (
-          <div
-            key={i}
-            className={`${styles.progressDot} ${i === stepIndex ? styles.progressDotActive : i < stepIndex ? styles.progressDotDone : ""}`}
-          />
-        ))}
+          {/* Phase steps */}
+          <div className={styles.phaseSteps}>
+            {LOADING_PHASES.map((label, i) => (
+              <div key={i} className={`${styles.phaseStep} ${i < phase ? styles.phaseStepDone : i === phase ? styles.phaseStepActive : ""}`}>
+                <div className={styles.phaseStepDot} />
+                <span className={styles.phaseStepLabel}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -81,9 +82,7 @@ export default function Home() {
     try {
       const res = await fetch("/api/research", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company: companyName }),
       });
 
@@ -95,8 +94,7 @@ export default function Home() {
             const errData = JSON.parse(text);
             if (errData.error) errMsg = errData.error;
           } catch (e) {
-            console.error("Server HTML Error:", text);
-            errMsg = `Server Error: Please check your terminal. Ensure you ran 'npm install' and restarted the server. (Status ${res.status})`;
+            errMsg = `Server Error: Please check your terminal. (Status ${res.status})`;
           }
         } catch(e) {}
         throw new Error(errMsg);
@@ -140,7 +138,6 @@ export default function Home() {
 
       <div className="status-area">
         {loading && <LoadingAnimation company={companyName} />}
-
         {results && !loading && (
           <ResearchResults results={results} company={companyName} />
         )}

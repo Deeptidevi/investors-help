@@ -1,9 +1,10 @@
 "use client";
 
-import { TrendingUp, AlertTriangle, FileText, CheckCircle, Ban } from "lucide-react";
+import { TrendingUp, AlertTriangle, FileText, CheckCircle, Ban, Info } from "lucide-react";
 import styles from "../app/page.module.css";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useState } from "react";
 
 interface ResultsProps {
   company: string;
@@ -22,6 +23,55 @@ interface ResultsProps {
     highlights: string[];
     risks: string[];
   };
+}
+
+function VerdictGuide({ isInvest }: { isInvest: boolean }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className={styles.verdictGuideWrapper}>
+      <button
+        className={styles.verdictGuideBtn}
+        onClick={() => setOpen((v) => !v)}
+        aria-label="What does this mean?"
+      >
+        <Info size={14} />
+        What does this mean?
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className={styles.verdictGuideBox}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className={styles.verdictGuideGrid}>
+              <div className={`${styles.verdictGuideItem} ${styles.verdictGuideInvest}`}>
+                <CheckCircle size={16} />
+                <div>
+                  <strong>INVEST</strong>
+                  <p>The AI analysis suggests this stock has favourable risk-to-reward characteristics based on current market data and fundamentals.</p>
+                </div>
+              </div>
+              <div className={`${styles.verdictGuideItem} ${styles.verdictGuidePass}`}>
+                <Ban size={16} />
+                <div>
+                  <strong>PASS</strong>
+                  <p>The AI suggests caution — the stock may be overvalued, too volatile, or facing headwinds that outweigh its growth potential right now.</p>
+                </div>
+              </div>
+            </div>
+            <p className={styles.verdictDisclaimer}>
+              ⚠️ <strong>Not financial advice.</strong> This is an AI-generated analysis for informational purposes only. Always do your own research before making any investment decisions.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 export default function ResearchResults({ company, results }: ResultsProps) {
@@ -60,6 +110,9 @@ export default function ResearchResults({ company, results }: ResultsProps) {
             {results.decision}
           </div>
         </div>
+
+        {/* Verdict guide */}
+        <VerdictGuide isInvest={isInvest} />
       </div>
 
       {results.chartData && results.chartData.length > 0 && (
