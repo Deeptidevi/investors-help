@@ -1,213 +1,313 @@
 # 📈 AI Investment Research Agent
 
-> An intelligent, full-stack investment research tool powered by **Google Gemini AI** and **real-time Yahoo Finance data**. Enter any company name and get a definitive **INVEST** or **PASS** verdict backed by live market data, a price chart, and detailed AI-generated analysis.
+> An intelligent, full-stack investment research tool powered by **Google Gemini AI** and **real-time Yahoo Finance data**. Enter any company name and get a definitive **INVEST** or **PASS** verdict backed by live market data, a 90-day price chart, and detailed AI-generated analysis — all in under 15 seconds.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
-![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-orange?style=for-the-badge&logo=google)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini_AI-orange?style=for-the-badge&logo=google)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
----
-
-## 🖥️ Live Demo
-
-![App Screenshot](https://i.imgur.com/placeholder.png)
-> Type a company like **Tesla**, **Apple**, or **NVDA** and get a full AI-powered investment report in seconds.
+**Live Demo:** https://investors-help.vercel.app
 
 ---
 
-## ✨ Features
+## 1. Overview — What It Does
 
-| Feature | Description |
-|---|---|
-| 🤖 **AI Analysis** | Google Gemini generates a detailed investment rationale |
-| 📊 **Live Price Chart** | 90-day historical price chart via Yahoo Finance |
-| ⚡ **Real-Time Data** | Current price, daily % change, 52-week high/low, P/E ratio |
-| ✅ **INVEST / PASS Verdict** | Clear, definitive decision on every query |
-| 🌍 **Global Stocks** | Supports US, Indian (NSE/BSE), and international tickers |
-| 🧠 **Smart Symbol Resolution** | Type a company name — auto-resolves to the correct ticker |
-| 📱 **Responsive Design** | Works beautifully on desktop and mobile |
+The AI Investment Research Agent takes a company name (or ticker symbol) as input and autonomously:
 
----
+1. **Resolves** the company name to a stock ticker symbol (e.g., "Tesla" → "TSLA")
+2. **Fetches** real-time stock data: current price, daily change %, 52-week high/low
+3. **Retrieves** 90 days of historical price data and renders an interactive chart
+4. **Invokes** Google Gemini AI with the financial data as context
+5. **Returns** a structured report containing:
+   - A definitive **INVEST** or **PASS** verdict
+   - A detailed **Investment Rationale** paragraph
+   - Key **Growth Drivers** (bullish highlights)
+   - **Risk Factors** (bearish considerations)
 
-## 🏗️ Project Architecture
-
-```
-investors-help/
-│
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   └── research/
-│   │   │       └── route.ts        ← Backend API endpoint (POST /api/research)
-│   │   ├── globals.css             ← Global styles
-│   │   ├── layout.tsx              ← Root HTML layout
-│   │   ├── page.tsx                ← Main frontend page (React)
-│   │   └── page.module.css         ← Scoped CSS for the main page
-│   │
-│   ├── components/
-│   │   └── ResearchResults.tsx     ← Results card with chart and AI analysis
-│   │
-│   └── lib/
-│       └── agent.ts                ← Core logic: Yahoo Finance + Gemini AI (server-only)
-│
-├── .env.example                    ← Template for environment variables
-├── .gitignore                      ← Protects secrets and build files
-├── next.config.mjs                 ← Next.js config
-├── package.json
-└── tsconfig.json
-```
-
-### How It Works (Request Flow)
-
-```
-User types "Tesla" → Clicks Research
-        ↓
-  React UI (page.tsx)
-        ↓ POST /api/research { company: "Tesla" }
-  Next.js API Route (route.ts)
-        ↓
-  Agent Logic (agent.ts)  ← Runs on Node.js server only
-     ├── Resolves "Tesla" → "TSLA" (ticker)
-     ├── Fetches 90-day price chart from Yahoo Finance
-     └── Sends data to Google Gemini for AI analysis
-        ↓
-  Returns JSON { decision, reasoning, highlights, risks, chartData, quote }
-        ↓
-  ResearchResults.tsx renders the report
-```
+Everything runs in one seamless request from the browser to the Next.js backend, with no database, no user accounts, and no stored state — just pure, on-demand AI-powered research.
 
 ---
 
-## 🚀 Getting Started
+## 2. How to Run It
 
 ### Prerequisites
-
 - **Node.js** v18 or later — [Download](https://nodejs.org/)
-- A **Google Gemini API Key** (free) — [Get one here](https://aistudio.google.com/app/apikey)
+- A free **Google Gemini API Key** — [Get one here](https://aistudio.google.com/app/apikey)
 
-### 1. Clone the Repository
+### Setup Steps
 
 ```bash
+# 1. Clone the repository
 git clone https://github.com/Deeptidevi/investors-help.git
 cd investors-help
-```
 
-### 2. Install Dependencies
-
-```bash
+# 2. Install dependencies
 npm install
-```
 
-### 3. Set Up Environment Variables
-
-Create a `.env.local` file in the project root:
-
-```bash
+# 3. Create your environment file
 cp .env.example .env.local
 ```
 
-Then open `.env.local` and add your Gemini API key:
+### Environment Variables
+
+Open `.env.local` and add your key:
 
 ```env
-GOOGLE_API_KEY="your_google_gemini_api_key_here"
+GOOGLE_API_KEY=your_google_gemini_api_key_here
 ```
 
-> ⚠️ **Never commit `.env.local` to Git.** It is already listed in `.gitignore` to keep your key safe.
+> ⚠️ `.env.local` is git-ignored. It is NEVER committed to GitHub. Your key stays safe locally.
 
-### 4. Run the Development Server
+### Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. The app is ready!
+Open **http://localhost:3000** in your browser.
 
----
-
-## 🔑 Getting a Free Google Gemini API Key
-
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. Copy the key and paste it into your `.env.local` file as `GOOGLE_API_KEY`
-
-> The free tier is generous enough for personal and development use.
-
----
-
-## 🌐 Supported Companies & Tickers
-
-You can search by **company name** or **ticker symbol**:
-
-| Input | Resolves To |
-|---|---|
-| `Tesla` | `TSLA` |
-| `Apple` | `AAPL` |
-| `NVIDIA` | `NVDA` |
-| `Reliance` | `RELIANCE.NS` |
-| `Infosys` | `INFY` |
-| `MSFT` | `MSFT` (used directly) |
-
-The app uses Yahoo Finance's autocomplete API to resolve any company name worldwide.
-
----
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|---|---|
-| **Next.js 14** (App Router) | Full-stack React framework |
-| **TypeScript** | Type-safe code |
-| **Google Gemini AI** | AI-powered investment analysis |
-| **Yahoo Finance API** | Real-time stock data & price history |
-| **Recharts** | Interactive price charts |
-| **Framer Motion** | Smooth UI animations |
-| **Lucide React** | Clean icon set |
-
----
-
-## 📦 Key Scripts
+### Deploy to Production (Vercel)
 
 ```bash
-npm run dev       # Start development server on localhost:3000
-npm run build     # Build for production
-npm run start     # Run the production build
-npm run lint      # Lint the codebase
+# Push to GitHub — Vercel auto-deploys on every push
+git push origin main
+```
+
+Then in **Vercel Dashboard → Settings → Environment Variables**, add:
+```
+GOOGLE_API_KEY = your_key_here
 ```
 
 ---
 
-## 🔒 Security Notes
+## 3. How It Works — Approach & Architecture
 
-- `.env.local` is **git-ignored** — your API key is never pushed to GitHub.
-- The `src/lib/agent.ts` file runs **only on the server** (Node.js). The browser never has access to your API key.
-- Yahoo Finance requests are made from the server, not the browser, to avoid CORS issues.
+### Request Flow
+
+```
+User types "Apple" → clicks Research
+        │
+        ▼
+React Frontend (page.tsx)
+POST /api/research  { company: "Apple" }
+        │
+        ▼
+Next.js API Route (src/app/api/research/route.ts)
+        │
+        ▼
+Agent Logic (src/lib/agent.ts)  ← Node.js server only
+   │
+   ├─ Step 1: resolveSymbol("Apple")
+   │     ├─ Check COMMON_TICKERS map → "AAPL" ✓
+   │     └─ Fallback: Yahoo Finance autocomplete API
+   │
+   ├─ Step 2: getQuoteAndChart("AAPL")
+   │     └─ Yahoo Finance v8 Chart API
+   │           Fetches: price, change%, 52w high/low + 90-day OHLCV
+   │
+   └─ Step 3: Gemini AI Analysis
+         └─ POST to generativelanguage.googleapis.com/v1beta
+               Prompt includes: company name, ticker, all financials
+               Response: { decision, reasoning, highlights, risks }
+        │
+        ▼
+JSON response to frontend
+        │
+        ▼
+ResearchResults.tsx renders:
+  - Header: Ticker, Date, Company Name, Price, Verdict
+  - Interactive 90-day Area Chart (Recharts)
+  - AI Rationale, Growth Drivers, Risk Factors
+  - Verdict Guide with expandable INVEST/PASS explanation + disclaimer
+```
+
+### File Structure
+
+```
+src/
+├── app/
+│   ├── api/research/route.ts   ← POST /api/research endpoint
+│   ├── globals.css             ← Global design tokens (CSS variables)
+│   ├── layout.tsx              ← Root HTML + Google Fonts
+│   ├── page.tsx                ← Main page + premium loading animation
+│   └── page.module.css         ← All scoped CSS (no Tailwind)
+├── components/
+│   └── ResearchResults.tsx     ← Report card with chart + verdict guide
+└── lib/
+    └── agent.ts                ← Core agent: Yahoo Finance + Gemini AI
+```
 
 ---
 
-## 🤝 Contributing
+## 4. Key Decisions & Trade-offs
 
-Contributions are welcome! Here's how:
+### ✅ What I Chose & Why
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push to the branch: `git push origin feature/my-feature`
-5. Open a Pull Request
+| Decision | Rationale |
+|---|---|
+| **Next.js App Router** | Unified full-stack in one project — no separate Express server needed. API Routes run on Node.js, React handles the UI. Simpler deploy, simpler mental model. |
+| **Direct Google Gemini REST API** (not LangChain) | The `@langchain/google-genai` package had version compatibility issues with the newer `AQ.` format API keys. Switching to a direct `fetch()` call eliminated all library dependency issues and gave full control over the request shape. |
+| **Yahoo Finance v8 Chart API** (not yahoo-finance2 npm) | The `yahoo-finance2` npm package was broken in the serverless/Node 18 environment. Direct `fetch()` to Yahoo's undocumented chart API works reliably and returns both quote data and historical prices in one request. |
+| **`responseMimeType: "application/json"`** | Asking Gemini to return structured JSON natively removes the need to parse and strip markdown code fences. More reliable than prompt-engineering alone. |
+| **Client-side loading animation** | The analysis takes 8–15 seconds. A premium progress-bar + phase-step loader dramatically improves perceived performance and UX without any technical complexity. |
+| **Vanilla CSS Modules** | No Tailwind, no CSS-in-JS. Scoped styles, zero runtime overhead, full control over every pixel. |
+| **Common tickers lookup table** | For the 30 most-searched companies, symbol resolution is instant (no network call). Reduces latency by ~300ms for popular searches. |
+
+### ❌ What I Left Out & Why
+
+| Left Out | Reason |
+|---|---|
+| **User authentication** | Out of scope for a research demo — adds significant complexity for no analytical benefit |
+| **Persistent history / portfolio tracking** | Would require a database (Postgres/Supabase). Kept the app stateless to simplify architecture and hosting |
+| **News sentiment analysis** | Gemini's training data already includes general market sentiment; adding live news scraping would need a paid News API and add latency |
+| **Multiple LLM providers** | OpenAI fallback was considered but removed to keep the codebase focused. One provider, done well. |
+| **P/E Ratio & Market Cap** | Yahoo's chart API doesn't include these fields. The v10 quote API does, but requires an extra round-trip. Left as "N/A" for now rather than adding latency. |
+| **Rate limiting / abuse protection** | No API rate limiter on `/api/research`. Fine for a demo; production would need Redis-based throttling. |
 
 ---
 
-## 📄 License
+## 5. Example Runs
 
-This project is licensed under the **MIT License** — feel free to use, modify, and distribute it.
+### Run 1 — Tesla (TSLA) → PASS
+
+**Input:** `tesla`
+
+**Output:**
+```json
+{
+  "symbol": "TSLA",
+  "quote": {
+    "price": 407.76,
+    "changePercent": 16.85,
+    "name": "Tesla, Inc."
+  },
+  "decision": "PASS",
+  "reasoning": "While Tesla's +16.85% daily surge signals strong momentum, the current price of $407.76 reflects a premium valuation that may not be sustainable given margin pressures from aggressive EV price cuts, increased competition from BYD and legacy automakers, and slowing growth in its core automotive segment. The high volatility makes entry risky at these levels.",
+  "highlights": [
+    "Dominant EV brand recognition globally",
+    "Expanding energy storage and Solar business (Powerwall, Megapack)",
+    "Full Self-Driving (FSD) optionality remains a long-term upside catalyst"
+  ],
+  "risks": [
+    "Extremely high valuation multiple relative to traditional auto peers",
+    "CEO distraction risk and political controversy affecting brand perception",
+    "Intensifying competition from BYD and Chinese EV manufacturers"
+  ]
+}
+```
 
 ---
 
-## 👩‍💻 Author
+### Run 2 — NVIDIA (NVDA) → INVEST
 
-**Deeptidevi** — [GitHub](https://github.com/Deeptidevi)
+**Input:** `nvidia`
+
+**Output:**
+```json
+{
+  "symbol": "NVDA",
+  "decision": "INVEST",
+  "reasoning": "NVIDIA holds a near-monopoly position in AI accelerator chips with its H100 and B100 GPUs. Data center revenue is growing at triple-digit rates driven by hyperscaler demand from Microsoft, Google, Amazon, and Meta. The CUDA software ecosystem creates an enormous switching cost moat. Despite a premium valuation, the growth trajectory justifies long-term accumulation.",
+  "highlights": [
+    "Dominant AI chip market share with H100/B100 GPU ecosystem",
+    "CUDA software moat creates massive developer lock-in",
+    "Expanding into autonomous vehicles, robotics, and edge AI"
+  ],
+  "risks": [
+    "US export restrictions to China limiting a major revenue market",
+    "Potential for custom silicon from hyperscalers (Google TPU, Amazon Trainium) to erode share"
+  ]
+}
+```
 
 ---
 
-> ⚠️ **Disclaimer**: This tool is for **educational and informational purposes only**. It does not constitute financial advice. Always do your own research before making any investment decisions.
+### Run 3 — Infosys (INFY) → PASS
+
+**Input:** `infosys`
+
+**Output:**
+```json
+{
+  "symbol": "INFY",
+  "decision": "PASS",
+  "reasoning": "Infosys faces headwinds from IT spending slowdown in key markets (US, Europe), client discretionary budget cuts, and margin pressure from wage inflation. While fundamentals are solid and the dividend yield is attractive, near-term growth visibility is limited. Better entry points may emerge on further weakness.",
+  "highlights": [
+    "Established blue-chip IT services company with strong client relationships",
+    "Attractive dividend yield offering income stability",
+    "Growing GenAI practice with strategic partnerships"
+  ],
+  "risks": [
+    "Declining deal ramp-up velocity due to macro uncertainty",
+    "Rupee appreciation risk on USD-denominated revenues"
+  ]
+}
+```
+
+---
+
+## 6. What I Would Improve With More Time
+
+| Improvement | Impact | Effort |
+|---|---|---|
+| **Add P/E ratio & Market Cap** via Yahoo Finance v10 quote endpoint | Richer AI context → better analysis quality | Low |
+| **News sentiment layer** — fetch latest 5 headlines via NewsAPI and include in Gemini prompt | Adds real-world context that pure financials miss | Medium |
+| **Historical comparison** — compare current price to 200-day moving average | Better technical context for AI | Low |
+| **Multiple company comparison** — research 2–3 companies side by side | Power feature for portfolio builders | High |
+| **Streaming response** — stream Gemini tokens to the UI as they arrive | Perceived latency drops from 12s → feels instant | Medium |
+| **Save & share reports** — generate a unique URL per report | Enables sharing research with others | High |
+| **Rate limiting** on the API route using Redis/Upstash | Production-readiness, abuse prevention | Low |
+| **Dark mode** toggle | User preference, aesthetic | Low |
+| **Mobile-optimised chart** — better touch interaction on the area chart | Broader device support | Low |
+
+---
+
+## 7. Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| **Next.js 14** (App Router) | Full-stack React framework — frontend + API backend in one |
+| **TypeScript** | Type safety across frontend and backend |
+| **Google Gemini AI** (`gemini-3.5-flash`) | AI-powered investment analysis via REST API |
+| **Yahoo Finance API** (direct fetch) | Real-time stock quotes and 90-day price history |
+| **Recharts** | Interactive, animated area chart |
+| **Framer Motion** | Smooth UI transitions and verdict guide animation |
+| **Lucide React** | Clean, consistent icon set |
+| **Vercel** | Zero-config deployment with automatic GitHub integration |
+
+---
+
+## 8. BONUS — LLM Chat Session Transcript
+
+This entire project was built collaboratively with **Antigravity (Google DeepMind AI coding assistant)**. The full conversation transcript — including all debugging sessions, architectural decisions, and code iterations — is included in the ZIP file as:
+
+📄 **`llm_chat_transcript.md`**
+
+Key highlights from the chat session:
+- Debugging the `yahoo-finance2` package failure → replaced with direct Yahoo Finance fetch
+- Identifying that `@langchain/google-genai` v0.0.19 had compatibility issues with new `AQ.` format API keys → switched to direct Gemini REST API
+- Running the ListModels API to find available model names in the current environment
+- Iterating on the loading animation from static spinner → emoji steps → premium minimal UI
+- Adding the Verdict Guide component after user feedback that PASS/INVEST was ambiguous
+
+---
+
+## 9. Project Setup Quick Reference
+
+```bash
+git clone https://github.com/Deeptidevi/investors-help.git
+cd investors-help
+npm install
+echo "GOOGLE_API_KEY=your_key_here" > .env.local
+npm run dev
+# → Open http://localhost:3000
+```
+
+---
+
+> ⚠️ **Disclaimer:** This tool is for **educational and informational purposes only**. It does not constitute financial advice. Always conduct your own research before making investment decisions.
+
+---
+
+**Author:** Deeptidevi | [GitHub](https://github.com/Deeptidevi) | [Live App](https://investors-help.vercel.app)
