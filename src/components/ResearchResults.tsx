@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, AlertTriangle, FileText, CheckCircle, XCircle } from "lucide-react";
+import { TrendingUp, AlertTriangle, FileText, CheckCircle, Ban } from "lucide-react";
 import styles from "../app/page.module.css";
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -56,7 +56,7 @@ export default function ResearchResults({ company, results }: ResultsProps) {
         <div className={styles.decisionContainer}>
           <span className={styles.decisionLabel}>FINAL VERDICT:</span>
           <div className={isInvest ? styles.decisionValueInvest : styles.decisionValuePass}>
-            {isInvest ? <CheckCircle size={24} /> : <XCircle size={24} />}
+            {isInvest ? <CheckCircle size={24} /> : <Ban size={24} />}
             {results.decision}
           </div>
         </div>

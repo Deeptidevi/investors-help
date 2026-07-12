@@ -1,9 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import styles from "./page.module.css";
 import ResearchResults from "@/components/ResearchResults";
+
+const LOADING_STEPS = [
+  { icon: "🔍", text: "Resolving company ticker symbol..." },
+  { icon: "📡", text: "Fetching real-time market data..." },
+  { icon: "📊", text: "Pulling 90-day price history..." },
+  { icon: "🤖", text: "Running AI investment analysis..." },
+  { icon: "⚖️",  text: "Weighing risks and growth factors..." },
+  { icon: "📝", text: "Compiling your research report..." },
+];
+
+function LoadingAnimation({ company }: { company: string }) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [dots, setDots] = useState("");
+
+  useEffect(() => {
+    const stepTimer = setInterval(() => {
+      setStepIndex((prev) => (prev + 1) % LOADING_STEPS.length);
+    }, 2200);
+    return () => clearInterval(stepTimer);
+  }, []);
+
+  useEffect(() => {
+    const dotTimer = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 400);
+    return () => clearInterval(dotTimer);
+  }, []);
+
+  return (
+    <div className={styles.loadingContainer}>
+      {/* Animated orb */}
+      <div className={styles.orbWrapper}>
+        <div className={styles.orb}></div>
+        <div className={styles.orbRing}></div>
+        <div className={styles.orbRing2}></div>
+      </div>
+
+      <p className={styles.loadingCompany}>Analyzing <strong>{company}</strong></p>
+
+      {/* Step indicator */}
+      <div className={styles.stepCard}>
+        <span className={styles.stepIcon}>{LOADING_STEPS[stepIndex].icon}</span>
+        <span className={styles.stepText}>
+          {LOADING_STEPS[stepIndex].text}{dots}
+        </span>
+      </div>
+
+      {/* Progress dots */}
+      <div className={styles.progressDots}>
+        {LOADING_STEPS.map((_, i) => (
+          <div
+            key={i}
+            className={`${styles.progressDot} ${i === stepIndex ? styles.progressDotActive : i < stepIndex ? styles.progressDotDone : ""}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [companyName, setCompanyName] = useState("");
@@ -80,12 +139,7 @@ export default function Home() {
       </div>
 
       <div className="status-area">
-        {loading && (
-          <div className={styles.loadingContainer}>
-            <div className={styles.spinner}></div>
-            <p className={styles.loadingText}>Synthesizing market data and financials...</p>
-          </div>
-        )}
+        {loading && <LoadingAnimation company={companyName} />}
 
         {results && !loading && (
           <ResearchResults results={results} company={companyName} />
